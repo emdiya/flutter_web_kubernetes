@@ -7,6 +7,8 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'flutter-web-kubernetes'
+        FLUTTER_HOME = '/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin://flutter/bin' 
+        PATH = "${env.PATH}:${FLUTTER_HOME}/bin" 
     }
 
     triggers {
@@ -20,30 +22,15 @@ pipeline {
             }
         }
 
-        stage('Flutter Doctor') {
-            steps {
-                sh '''
-                export PATH="$PATH:$WORKSPACE/flutter/bin"
-                flutter doctor
-                '''
-            }
-        }
-
         stage('Flutter Clean & Flutter Pubget') {
             steps {
-                sh '''
-                export PATH="$PATH:$WORKSPACE/flutter/bin"
-                flutter clean && flutter pub get
-                '''
+                sh 'flutter clean && flutter pub get'
             }
         }
 
         stage('Build Flutter Web') {
             steps {
-                sh '''
-                export PATH="$PATH:$WORKSPACE/flutter/bin"
-                flutter build web
-                '''
+                sh 'flutter build web'
             }
         }
 
