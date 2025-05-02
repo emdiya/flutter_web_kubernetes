@@ -16,6 +16,13 @@ pipeline {
             }
         }
 
+        stage('Build Flutter Web') {
+            steps {
+                sh 'flutter build web'
+            }
+        }
+
+
         stage('Build Docker Image') {
             steps {
                 script {
