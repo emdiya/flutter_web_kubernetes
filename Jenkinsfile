@@ -15,24 +15,15 @@ pipeline {
     }
 
     stages {
-        stage('Install Flutter SDK') {
-            steps {
-                sh '''
-                # Only clone if not already present
-                if [ ! -d "flutter" ]; then
-                  git clone https://github.com/flutter/flutter.git -b stable
-                fi
-
-                # Pre-cache Flutter dependencies
-                export PATH="$PATH:$PWD/flutter/bin"
-                flutter doctor
-                '''
-            }
-        }
-
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/emdiya/flutter_web_kubernetes.git'
+            }
+        }
+
+        stage('Flutter Doctor') {
+            steps {
+                sh 'flutter doctor'
             }
         }
 
