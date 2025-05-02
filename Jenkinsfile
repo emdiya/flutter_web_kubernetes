@@ -7,7 +7,6 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'flutter-web-kubernetes'
-        PATH = "${env.PATH}:${env.WORKSPACE}/flutter/bin"
     }
 
     triggers {
@@ -23,19 +22,28 @@ pipeline {
 
         stage('Flutter Doctor') {
             steps {
-                sh 'flutter doctor'
+                sh '''
+                export PATH="$PATH:$WORKSPACE/flutter/bin"
+                flutter doctor
+                '''
             }
         }
 
         stage('Flutter Clean & Flutter Pubget') {
             steps {
-                sh 'flutter clean && flutter pub get'
+                sh '''
+                export PATH="$PATH:$WORKSPACE/flutter/bin"
+                flutter clean && flutter pub get
+                '''
             }
         }
 
         stage('Build Flutter Web') {
             steps {
-                sh 'flutter build web'
+                sh '''
+                export PATH="$PATH:$WORKSPACE/flutter/bin"
+                flutter build web
+                '''
             }
         }
 
@@ -44,14 +52,14 @@ pipeline {
                 script {
                     env.IMAGE_TAG = "${env.BUILD_NUMBER}"
                     env.FULL_IMAGE_NAME = "${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker build -t ${FULL_IMAGE_NAME} ."
                 }
+                sh "docker build -t ${env.FULL_IMAGE_NAME} ."
             }
         }
 
         stage('Load Docker Image into kind') {
             steps {
-                sh "kind load docker-image ${FULL_IMAGE_NAME}"
+                sh "kind load docker-image ${env.FULL_IMAGE_NAME}"
             }
         }
 
