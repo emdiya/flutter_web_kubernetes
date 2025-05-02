@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'flutter-web-kubernetes'
+        PATH = "${env.PATH}:${env.WORKSPACE}/flutter/bin"
     }
 
     triggers {
@@ -14,6 +15,21 @@ pipeline {
     }
 
     stages {
+        stage('Install Flutter SDK') {
+            steps {
+                sh '''
+                # Only clone if not already present
+                if [ ! -d "flutter" ]; then
+                  git clone https://github.com/flutter/flutter.git -b stable
+                fi
+
+                # Pre-cache Flutter dependencies
+                export PATH="$PATH:$PWD/flutter/bin"
+                flutter doctor
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/emdiya/flutter_web_kubernetes.git'
@@ -22,7 +38,7 @@ pipeline {
 
         stage('Flutter Clean & Flutter Pubget') {
             steps {
-                sh 'flutter clean; flutter pub get'
+                sh 'flutter clean && flutter pub get'
             }
         }
 
