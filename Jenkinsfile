@@ -6,7 +6,7 @@ pipeline {
     }
 
     triggers {
-        githubPush() // Auto-trigger on GitHub push
+        githubPush()
     }
 
     stages {
@@ -16,28 +16,24 @@ pipeline {
             }
         }
 
+
         stage('Build Docker Image') {
-            when {
-                branch 'main'
-            }
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                script {
+                    // Use Jenkins build number as image tag
+                    env.IMAGE_TAG = "${env.BUILD_NUMBER}"
+                    sh "docker build -t flutter-web-kubernetes:${IMAGE_TAG} ."
+                }
             }
         }
 
         stage('Load Docker Image into kind') {
-            when {
-                branch 'main'
-            }
             steps {
                 sh 'kind load docker-image $IMAGE_NAME'
             }
         }
 
         stage('Deploy to Kubernetes') {
-            when {
-                branch 'main'
-            }
             steps {
                 sh 'kubectl apply -f deployment.yaml'
             }
