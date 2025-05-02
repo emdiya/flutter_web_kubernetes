@@ -41,6 +41,12 @@ class HelloKubernetesPage extends StatelessWidget {
             ),
             const SizedBox(height: 30), // Spacing between text and logos
 
+            const Text(
+              'Add Jenkins',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30), // Spacing between text and logos
+
             // Logos in a Row
             Row(
               mainAxisAlignment:
