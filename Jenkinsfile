@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        git 'Default'
+    }
+
     environment {
         IMAGE_NAME = 'flutter-web-kubernetes'
     }
@@ -16,17 +20,21 @@ pipeline {
             }
         }
 
+        stage('Flutter Clean & Flutter Pubget') {
+            steps {
+                sh 'flutter clean; flutter pub get'
+            }
+        }
+
         stage('Build Flutter Web') {
             steps {
                 sh 'flutter build web'
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Tag the image with build number
                     env.IMAGE_TAG = "${env.BUILD_NUMBER}"
                     env.FULL_IMAGE_NAME = "${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "docker build -t ${FULL_IMAGE_NAME} ."
@@ -42,7 +50,6 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                
                 sh 'kubectl apply -f deployment.yaml'
             }
         }
