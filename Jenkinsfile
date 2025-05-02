@@ -7,8 +7,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'flutter-web-kubernetes'
-        FLUTTER_HOME = '/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin://flutter/bin' 
-        PATH = "${env.PATH}:${FLUTTER_HOME}/bin" 
+        PATH = "$PATH:/tmp/workspace/flutter/bin"
     }
 
     triggers {
@@ -21,6 +20,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/emdiya/flutter_web_kubernetes.git'
             }
         }
+
+         stage('Flutter Docker') {
+            steps {
+                sh "flutter doctor -v"
+            }
+        }      
 
         stage('Flutter Clean & Flutter Pubget') {
             steps {
