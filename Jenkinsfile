@@ -16,25 +16,26 @@ pipeline {
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Use Jenkins build number as image tag
+                    // Tag the image with build number
                     env.IMAGE_TAG = "${env.BUILD_NUMBER}"
-                    sh "docker build -t flutter-web-kubernetes:${IMAGE_TAG} ."
+                    env.FULL_IMAGE_NAME = "${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker build -t ${FULL_IMAGE_NAME} ."
                 }
             }
         }
 
         stage('Load Docker Image into kind') {
             steps {
-                sh 'kind load docker-image $IMAGE_NAME'
+                sh "kind load docker-image ${FULL_IMAGE_NAME}"
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
+                
                 sh 'kubectl apply -f deployment.yaml'
             }
         }
