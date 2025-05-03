@@ -55,13 +55,9 @@ pipeline {
             }
         }
 
-        stage('Trigger Deploy to Kubernetes') {
+        stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    build job: 'deploy-to-k9s', wait: true, parameters: [
-                        string(name: 'IMAGE_TAG', value: "${env.IMAGE_TAG}")
-                    ]
-                }
+                sh 'kubectl apply -f deployment.yaml'
             }
         }
     }
