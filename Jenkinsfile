@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'flutter-web-kubernetes'
-        PATH = "$PATH:/tmp/workspace/flutter/bin"
+         PATH = "/root/flutter/bin:$PATH"
     }
 
     triggers {
@@ -21,7 +21,7 @@ pipeline {
             }
         }
 
-         stage('Flutter Docker') {
+        stage('Flutter Docker') {
             steps {
                 sh "flutter doctor -v"
             }
