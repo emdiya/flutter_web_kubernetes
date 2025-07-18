@@ -1,0 +1,13 @@
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: flutter-web-service
+spec:
+  selector:
+    app: flutter-web # This must match the 'app' label in your deployment.yaml
+  ports:
+    - protocol: TCP
+      port: 80        # The port for the Service within the cluster
+      targetPort: 80  # The port your Nginx container listens on
+  type: LoadBalancer  # Change to NodePort or ClusterIP if needed

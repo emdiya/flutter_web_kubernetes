@@ -16,20 +16,6 @@ spec:
     spec:
       containers:
         - name: flutter-web-container
-          image: flutter-web-kubernetes
-          imagePullPolicy: Never
+          image: emdiya/flutter-kubernets-app:latest
           ports:
             - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: flutter-web-service
-spec:
-  selector:
-    app: flutter-web
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer
